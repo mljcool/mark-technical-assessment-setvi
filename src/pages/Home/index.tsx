@@ -18,11 +18,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { SearhBarSection } from './styled';
 import PageSection from 'components/PageSection';
+import { Utils } from 'utils/search';
 
 const Home = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<IPost[]>([]);
+  const [placeholderData, setPlaceholderData] = useState<IPost[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searched, setSearched] = useState<string>('');
   const [page, setPage] = useState(0);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -36,6 +39,15 @@ const Home = () => {
     setPage(0);
   };
 
+  const requestSearch = (searchedVal: string) => {
+    setSearched(searchedVal);
+    const results = Utils.filterArrayByString(
+      placeholderData,
+      searchedVal
+    ) as IPost[];
+    setPost(results);
+  };
+
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - post.length) : 0;
 
@@ -45,6 +57,7 @@ const Home = () => {
         const response = await getPostList();
         const { data } = response;
         setPost(data as IPost[]);
+        setPlaceholderData(data as IPost[]);
       } catch (error) {
         console.error(error);
       }
@@ -54,7 +67,10 @@ const Home = () => {
   return (
     <PageSection pageTitle='Listing all items' isLoading={!post.length}>
       <SearhBarSection>
-        <SearchBar />
+        <SearchBar
+          value={searched}
+          onSearchPost={(e) => requestSearch(e.target.value)}
+        />
         <Button
           variant='contained'
           onClick={() => navigate(`/create`)}

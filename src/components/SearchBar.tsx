@@ -3,13 +3,20 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import { FC } from 'react';
 
 export const SearhBarInput = styled(Paper)({
   borderRadius: 10,
   padding: '5px 6px',
 });
+interface ComponentProps {
+  value: string;
+  onSearchPost?: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void | React.ChangeEvent<HTMLInputElement> | undefined;
+}
 
-const SearchBar = () => {
+const SearchBar: FC<ComponentProps> = ({ onSearchPost, value }) => {
   return (
     <SearhBarInput>
       <Input
@@ -24,7 +31,8 @@ const SearchBar = () => {
             <SearchIcon />
           </InputAdornment>
         }
-        onChange={(ev) => {}}
+        value={value}
+        onChange={onSearchPost}
       />
     </SearhBarInput>
   );

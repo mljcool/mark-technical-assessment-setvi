@@ -19,5 +19,13 @@ export const addPost = async (dataParams: IPost) => {
   return resp;
 };
 
+export const updatePost = async (id: string, dataParams: IPost) => {
+  const data = JSON.stringify(dataParams);
+  const resp = await axios.put(`${SERVICE_API}/posts/${id}`, data, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return resp;
+};
+
 export const deletePost = async (id?: number | string) =>
   axios.delete(`${SERVICE_API}/posts/${id}`);

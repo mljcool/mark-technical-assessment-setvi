@@ -39,6 +39,7 @@ const renderRoutes = (routes: typeof appRoutes) => (
         element={route.component() as ReactNode}
       />
     ))}
+    <Route path='' element={<Navigate to='/post' />} />
   </>
 );
 

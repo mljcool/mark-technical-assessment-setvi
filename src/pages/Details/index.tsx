@@ -4,10 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useParams, useNavigate } from 'react-router-dom';
-import { deletePost, getPostList } from 'api/posts';
+import { deletePost, getPostList, updatePost } from 'api/posts';
 import { IPost } from 'types/Post';
 import PageSection from 'components/PageSection';
 import PostForms from 'components/PostForms';
+
+const SUCCESS_CODE = 200;
 
 const Details = () => {
   let { id } = useParams();
@@ -58,8 +60,9 @@ const Details = () => {
 
   const onUpdate = async (type = 'update') => {
     loadBuff(type, true);
-    const post = await deletePost(id);
-    if (post.status === 200) {
+    const post = await updatePost(id as string, values);
+    console.log(post);
+    if (post.status === SUCCESS_CODE) {
       onNavigate(type);
     }
   };
@@ -67,13 +70,13 @@ const Details = () => {
   const onDeletePost = async (type = 'delete') => {
     loadBuff(type, true);
     const post = await deletePost(id);
-    if (post.status === 200) {
+    if (post.status === SUCCESS_CODE) {
       onNavigate(type);
     }
   };
 
   return (
-    <PageSection pageTitle='Details' canBack>
+    <PageSection pageTitle={`Details / ${values.title}`} canBack>
       <Stack direction='column' spacing={2}>
         <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
         <Stack direction='row' spacing={2} alignItems='center'>
