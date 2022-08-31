@@ -33,7 +33,6 @@ const Create = () => {
             setIsloding(false);
           }, 1500);
         }
-        console.log(post);
       }
     } catch (error) {
       console.error(error);

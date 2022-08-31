@@ -61,7 +61,6 @@ const Details = () => {
   const onUpdate = async (type = 'update') => {
     loadBuff(type, true);
     const post = await updatePost(id as string, values);
-    console.log(post);
     if (post.status === SUCCESS_CODE) {
       onNavigate(type);
     }
