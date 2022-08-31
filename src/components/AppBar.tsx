@@ -16,7 +16,7 @@ const AppBarPage = () => {
     >
       <Toolbar>
         <Typography variant='h6' color='white' noWrap>
-          Mark Gocela Technical Assessment - setvi
+          🤓 Mark Gocela Technical Assessment 😎 - setvi
         </Typography>
       </Toolbar>
     </AppBar>
