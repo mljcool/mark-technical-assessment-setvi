@@ -3,10 +3,10 @@ import axios from 'axios';
 export const SERVICE_API = 'https://jsonplaceholder.typicode.com';
 // SKIP GENERIC FOR NOW
 
-export const getPostList = async (userId?: number) =>
+export const getPostList = async (id?: number | string) =>
   axios.get(`${SERVICE_API}/posts`, {
     params: {
-      userId,
+      id,
     },
   });
 

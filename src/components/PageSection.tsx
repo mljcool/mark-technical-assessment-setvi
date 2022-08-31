@@ -5,14 +5,21 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Stack from '@mui/material/Stack';
+import LinearIndeterminate from 'components/LoadingBar';
 import { useNavigate } from 'react-router-dom';
-
+import { Box } from '@mui/material';
 interface IProps extends IReactProps {
   pageTitle?: string;
   canBack?: boolean;
+  isLoading?: boolean;
 }
 
-const PageSection: FC<IProps> = ({ canBack, pageTitle, children }) => {
+const PageSection: FC<IProps> = ({
+  canBack,
+  pageTitle,
+  isLoading,
+  children,
+}) => {
   let navigate = useNavigate();
   return (
     <SMainPageSection>
@@ -26,7 +33,10 @@ const PageSection: FC<IProps> = ({ canBack, pageTitle, children }) => {
           {pageTitle}
         </Typography>
       </Stack>
-      <SubPageSection>{children}</SubPageSection>
+      <SubPageSection>
+        {isLoading && <LinearIndeterminate />}
+        <Box sx={{ padding: '2rem' }}>{children}</Box>
+      </SubPageSection>
     </SMainPageSection>
   );
 };

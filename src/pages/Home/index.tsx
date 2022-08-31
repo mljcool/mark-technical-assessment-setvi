@@ -12,7 +12,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
-import LinearIndeterminate from 'components/LoadingBar';
 import { getPostList } from 'api/posts';
 import { IPost } from 'types/Post';
 import { useNavigate } from 'react-router-dom';
@@ -53,14 +52,13 @@ const Home = () => {
   }, []);
 
   return (
-    <PageSection pageTitle='Listing all items'>
+    <PageSection pageTitle='Listing all items' isLoading={!post.length}>
       <SearhBarSection>
         <SearchBar />
         <Button variant='contained' startIcon={<CreateIcon />}>
           Create
         </Button>
       </SearhBarSection>
-      {!!post.length ? null : <LinearIndeterminate />}
       <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
           <TableHead>
