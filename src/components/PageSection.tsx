@@ -8,13 +8,13 @@ import Stack from '@mui/material/Stack';
 import LinearIndeterminate from 'components/LoadingBar';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
-interface IProps extends IReactProps {
+interface ComponentProps extends IReactProps {
   pageTitle?: string;
   canBack?: boolean;
   isLoading?: boolean;
 }
 
-const PageSection: FC<IProps> = ({
+const PageSection: FC<ComponentProps> = ({
   canBack,
   pageTitle,
   isLoading,

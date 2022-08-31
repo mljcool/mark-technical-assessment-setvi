@@ -3,14 +3,14 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { IPost } from 'types/Post';
 
-interface IProps {
+interface ComponentProps {
   values: IPost;
   changeHandler?: (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void | React.ChangeEvent<HTMLInputElement> | undefined;
 }
 
-const PostForms: FC<IProps> = ({ values, changeHandler }) => {
+const PostForms: FC<ComponentProps> = ({ values, changeHandler }) => {
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
       <TextField
@@ -23,7 +23,7 @@ const PostForms: FC<IProps> = ({ values, changeHandler }) => {
       />
       <TextField
         sx={{ m: 1, width: '100%' }}
-        label='Content'
+        label='Description'
         id='post-content'
         name='body'
         value={values.body}

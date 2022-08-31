@@ -55,7 +55,11 @@ const Home = () => {
     <PageSection pageTitle='Listing all items' isLoading={!post.length}>
       <SearhBarSection>
         <SearchBar />
-        <Button variant='contained' startIcon={<CreateIcon />}>
+        <Button
+          variant='contained'
+          onClick={() => navigate(`/create`)}
+          startIcon={<CreateIcon />}
+        >
           Create
         </Button>
       </SearhBarSection>

@@ -1,18 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import Box from '@mui/material/Box';
+import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
-import PageSection from 'components/PageSection';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
-import { useParams } from 'react-router-dom';
-import { getPostList } from 'api/posts';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useParams, useNavigate } from 'react-router-dom';
+import { deletePost, getPostList } from 'api/posts';
 import { IPost } from 'types/Post';
+import PageSection from 'components/PageSection';
 import PostForms from 'components/PostForms';
 
 const Details = () => {
   let { id } = useParams();
+  let navigate = useNavigate();
+
+  const [isLoading, setIsloding] = useState({
+    update: false,
+    delete: false,
+  });
   const [values, setValues] = useState<IPost>({
     title: '',
     body: '',
@@ -26,18 +30,46 @@ const Details = () => {
         const [value] = data;
         setValues((prevState: IPost) => ({
           ...prevState,
-          ['title']: value.title,
-          ['body']: value.body,
+          title: value.title,
+          body: value.body,
         }));
       } catch (error) {
         console.error(error);
       }
     })();
-  }, []);
+  }, [id]);
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
+  };
+
+  const loadBuff = (name: string, isLoading: boolean) => {
+    setIsloding((oldState) => ({ ...oldState, [name]: isLoading }));
+  };
+
+  const onNavigate = (type = 'update') => {
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      navigate(-1);
+      loadBuff(type, false);
+    }, 1500);
+  };
+
+  const onUpdate = async (type = 'update') => {
+    loadBuff(type, true);
+    const post = await deletePost(id);
+    if (post.status === 200) {
+      onNavigate(type);
+    }
+  };
+
+  const onDeletePost = async (type = 'delete') => {
+    loadBuff(type, true);
+    const post = await deletePost(id);
+    if (post.status === 200) {
+      onNavigate(type);
+    }
   };
 
   return (
@@ -45,12 +77,24 @@ const Details = () => {
       <Stack direction='column' spacing={2}>
         <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
         <Stack direction='row' spacing={2} alignItems='center'>
-          <Button variant='contained' endIcon={<CreateIcon />}>
+          <LoadingButton
+            loading={isLoading.update}
+            loadingPosition='start'
+            variant='contained'
+            onClick={() => onUpdate('update')}
+            startIcon={<CreateIcon />}
+          >
             update
-          </Button>
-          <Button variant='outlined' startIcon={<DeleteIcon />}>
+          </LoadingButton>
+          <LoadingButton
+            loading={isLoading.delete}
+            loadingPosition='start'
+            variant='outlined'
+            onClick={() => onDeletePost('delete')}
+            startIcon={<DeleteIcon />}
+          >
             Delete
-          </Button>
+          </LoadingButton>
         </Stack>
       </Stack>
     </PageSection>
