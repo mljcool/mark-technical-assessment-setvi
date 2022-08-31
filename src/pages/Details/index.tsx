@@ -5,7 +5,7 @@ import PageSection from 'components/PageSection';
 const Details = () => {
   useEffect(() => {}, []);
 
-  return <PageSection pageTitle='Details'></PageSection>;
+  return <PageSection pageTitle='Details' canBack></PageSection>;
 };
 
 export default Details;

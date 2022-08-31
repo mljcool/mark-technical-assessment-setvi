@@ -18,6 +18,11 @@ const appRoutes: IRouteModel[] = [
     path: PATH_POST_DETAIL,
     component: () => <Details />,
   },
+  {
+    exact: true,
+    path: PATH_POST_DETAIL,
+    component: () => <Create />,
+  },
 ];
 
 const renderRoutes = (routes: typeof appRoutes) =>
