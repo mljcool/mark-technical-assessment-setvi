@@ -64,6 +64,16 @@ const Home = () => {
     })();
   }, []);
 
+  const TableHeader = () => (
+    <TableHead>
+      <TableRow>
+        <TableCell>ID</TableCell>
+        <TableCell>Title</TableCell>
+        <TableCell>Content</TableCell>
+      </TableRow>
+    </TableHead>
+  );
+
   return (
     <PageSection pageTitle='Listing all items' isLoading={!post.length}>
       <SearhBarSection>
@@ -79,15 +89,9 @@ const Home = () => {
           Create
         </Button>
       </SearhBarSection>
-      <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Content</TableCell>
-            </TableRow>
-          </TableHead>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650, maxHeight: 450 }} aria-label='simple table'>
+          <TableHeader />
           <TableBody>
             {(rowsPerPage > 0
               ? post.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -118,28 +122,28 @@ const Home = () => {
               </TableRow>
             )}
           </TableBody>
+          <TableFooter sx={{ minWidth: '100%' }}>
+            <TableRow>
+              <TablePagination
+                sx={{ minWidth: '100%' }}
+                rowsPerPageOptions={[5, 10, 15, { label: 'All', value: -1 }]}
+                colSpan={3}
+                count={post.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    'aria-label': 'rows per page',
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
-      <TableFooter sx={{ minWidth: '100%' }}>
-        <TableRow>
-          <TablePagination
-            sx={{ minWidth: '100%' }}
-            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-            colSpan={3}
-            count={post.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: {
-                'aria-label': 'rows per page',
-              },
-              native: true,
-            }}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </TableRow>
-      </TableFooter>
     </PageSection>
   );
 };

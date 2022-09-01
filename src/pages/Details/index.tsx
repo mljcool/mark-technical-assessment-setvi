@@ -28,6 +28,7 @@ const Details = () => {
     (async () => {
       try {
         const response = await getPostList(id);
+        console.log('response', response);
         const { data } = response;
         const [value] = data;
         setValues((prevState: IPost) => ({
@@ -75,7 +76,11 @@ const Details = () => {
   };
 
   return (
-    <PageSection pageTitle={`Details / ${values.title}`} canBack>
+    <PageSection
+      pageTitle={`Details / ${values.title}`}
+      isLoading={!values.title}
+      canBack
+    >
       <Stack direction='column' spacing={2}>
         <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
         <Stack direction='row' spacing={2} alignItems='center'>
