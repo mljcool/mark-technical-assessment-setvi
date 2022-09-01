@@ -1,13 +1,12 @@
-import { FC } from 'react';
-import { SMainPageSection, SubPageSection } from 'shared/styled';
-import { IReactProps } from 'types/ChildrenNode';
+import { FC, memo } from 'react';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import { SMainPageSection, SubPageSection } from 'shared/styled';
 import LinearIndeterminate from 'components/LoadingBar';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
 interface ComponentProps extends IReactProps {
   pageTitle?: string;
   canBack?: boolean;
@@ -21,6 +20,7 @@ const PageSection: FC<ComponentProps> = ({
   children,
 }) => {
   let navigate = useNavigate();
+
   return (
     <SMainPageSection>
       <Stack direction='row' spacing={2} sx={{ marginBottom: '5px' }}>
@@ -41,4 +41,4 @@ const PageSection: FC<ComponentProps> = ({
   );
 };
 
-export default PageSection;
+export default memo(PageSection);

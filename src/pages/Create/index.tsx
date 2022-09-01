@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, memo } from 'react';
 import Stack from '@mui/material/Stack';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CreateIcon from '@mui/icons-material/Create';
@@ -8,14 +8,16 @@ import PageSection from 'components/PageSection';
 import { IPost } from 'types/Post';
 import { addPost } from 'api/posts';
 
-const Create = () => {
+const CreatPageComponent = () => {
   let navigate = useNavigate();
   const [isLoading, setIsloding] = useState(false);
+
   const [values, setValues] = useState<IPost>({
     title: '',
     body: '',
   });
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const changeHandler = (event: changeEvent) => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   };
@@ -40,21 +42,29 @@ const Create = () => {
   };
 
   return (
-    <PageSection pageTitle='Create Post' canBack>
-      <Stack direction='column' spacing={2}>
-        <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
-        <Stack direction='row' spacing={2} alignItems='center'>
-          <LoadingButton
-            loading={isLoading}
-            loadingPosition='start'
-            variant='contained'
-            onClick={onSave}
-            startIcon={<CreateIcon />}
-          >
-            save
-          </LoadingButton>
-        </Stack>
+    <Stack direction='column' spacing={2}>
+      <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
+      <Stack direction='row' spacing={2} alignItems='center'>
+        <LoadingButton
+          loading={isLoading}
+          loadingPosition='start'
+          variant='contained'
+          onClick={onSave}
+          startIcon={<CreateIcon />}
+        >
+          save
+        </LoadingButton>
       </Stack>
+    </Stack>
+  );
+};
+
+const MemoizedCreatepage = memo(CreatPageComponent);
+
+const Create = () => {
+  return (
+    <PageSection pageTitle='Create Post' canBack>
+      <MemoizedCreatepage />
     </PageSection>
   );
 };

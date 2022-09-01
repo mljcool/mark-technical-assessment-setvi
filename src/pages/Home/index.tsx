@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback, memo, FC } from 'react';
 import SearchBar from 'components/SearchBar';
 import Button from '@mui/material/Button';
 import CreateIcon from '@mui/icons-material/Create';
@@ -20,7 +20,11 @@ import { SearhBarSection } from './styled';
 import PageSection from 'components/PageSection';
 import { Utils } from 'utils/search';
 
-const Home = () => {
+interface ComponentProps {
+  onLoad?: (isLoad: boolean) => void;
+}
+
+const HomePageComponent: FC<ComponentProps> = ({ onLoad }) => {
   const navigate = useNavigate();
   const [post, setPost] = useState<IPost[]>([]);
   const [placeholderData, setPlaceholderData] = useState<IPost[]>([]);
@@ -32,12 +36,21 @@ const Home = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (value: string) => {
+    setRowsPerPage(parseInt(value, 10));
     setPage(0);
   };
+
+  const memoizedHandleChangePage = useCallback(
+    (event: unknown, newPage: number) => {
+      return handleChangePage(event, newPage);
+    },
+    []
+  );
+
+  const memoizedHandleChangePerPage = useCallback((event: changeEvent) => {
+    return handleChangeRowsPerPage(event.target.value);
+  }, []);
 
   const requestSearch = (searchedVal: string) => {
     setSearched(searchedVal);
@@ -46,18 +59,25 @@ const Home = () => {
       searchedVal
     ) as IPost[];
     setPost(results);
+    if (!results.length) {
+      setRowsPerPage(0);
+    } else {
+      setRowsPerPage(5);
+    }
   };
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - post.length) : 0;
 
   useEffect(() => {
+    onLoad && onLoad(true);
     (async () => {
       try {
         const response = await getPostList();
         const { data } = response;
         setPost(data as IPost[]);
         setPlaceholderData(data as IPost[]);
+        onLoad && onLoad(false);
       } catch (error) {
         console.error(error);
       }
@@ -73,9 +93,8 @@ const Home = () => {
       </TableRow>
     </TableHead>
   );
-
   return (
-    <PageSection pageTitle='Listing all items' isLoading={!post.length}>
+    <>
       <SearhBarSection>
         <SearchBar
           value={searched}
@@ -128,7 +147,7 @@ const Home = () => {
                 sx={{ minWidth: '100%' }}
                 rowsPerPageOptions={[5, 10, 15, { label: 'All', value: -1 }]}
                 colSpan={3}
-                count={post.length}
+                count={post.length === 0 ? 1 : post.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -137,13 +156,24 @@ const Home = () => {
                   },
                   native: true,
                 }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={memoizedHandleChangePage}
+                onRowsPerPageChange={memoizedHandleChangePerPage}
               />
             </TableRow>
           </TableFooter>
         </Table>
       </TableContainer>
+    </>
+  );
+};
+
+const MemoizedHomePage = memo(HomePageComponent);
+
+const Home = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  return (
+    <PageSection pageTitle='Listing all items' isLoading={isLoading}>
+      <MemoizedHomePage onLoad={(isLoad) => setIsLoading(isLoad)} />
     </PageSection>
   );
 };

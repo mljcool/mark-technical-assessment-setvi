@@ -1,13 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { IPost } from 'types/Post';
 
 interface ComponentProps {
   values: IPost;
-  changeHandler?: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void | React.ChangeEvent<HTMLInputElement> | undefined;
+  changeHandler?: (e: changeEvent) => void | changeEvent | undefined;
 }
 
 const PostForms: FC<ComponentProps> = ({ values, changeHandler }) => {
@@ -33,4 +31,4 @@ const PostForms: FC<ComponentProps> = ({ values, changeHandler }) => {
   );
 };
 
-export default PostForms;
+export default memo(PostForms);

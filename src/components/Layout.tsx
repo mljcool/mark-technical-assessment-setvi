@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { styled } from '@mui/material/styles';
-import { IReactProps } from 'types/ChildrenNode';
 import Paper from '@mui/material/Paper';
 
 const RootLayout = styled(Paper)(({ theme }) => ({

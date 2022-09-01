@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Stack from '@mui/material/Stack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
@@ -15,37 +15,16 @@ const Details = () => {
   let { id } = useParams();
   let navigate = useNavigate();
 
+  const [title, setTitle] = useState<string>('Details /');
   const [isLoading, setIsloding] = useState({
     update: false,
     delete: false,
+    onload: false,
   });
   const [values, setValues] = useState<IPost>({
     title: '',
     body: '',
   });
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await getPostList(id);
-        console.log('response', response);
-        const { data } = response;
-        const [value] = data;
-        setValues((prevState: IPost) => ({
-          ...prevState,
-          title: value.title,
-          body: value.body,
-        }));
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, [id]);
-
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
-  };
 
   const loadBuff = (name: string, isLoading: boolean) => {
     setIsloding((oldState) => ({ ...oldState, [name]: isLoading }));
@@ -58,6 +37,15 @@ const Details = () => {
       loadBuff(type, false);
     }, 1500);
   };
+  const memoizedChangeHandler = useCallback(
+    (event: changeEvent) => changeHandler(event),
+    []
+  );
+
+  const changeHandler = (event: changeEvent) => {
+    const { name, value } = event.target;
+    setValues((preValues) => ({ ...preValues, [name]: value }));
+  };
 
   const onUpdate = async (type = 'update') => {
     loadBuff(type, true);
@@ -67,6 +55,29 @@ const Details = () => {
     }
   };
 
+  useEffect(() => {
+    loadBuff('onload', true);
+
+    (async () => {
+      try {
+        const response = await getPostList(id);
+        const { data, status } = response;
+        if (status === SUCCESS_CODE) {
+          const [value] = data;
+          setTitle(`Details / ${value.title}`);
+          setValues((prevState: IPost) => ({
+            ...prevState,
+            title: value.title,
+            body: value.body,
+          }));
+        }
+        loadBuff('onload', false);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, [id]);
+
   const onDeletePost = async (type = 'delete') => {
     loadBuff(type, true);
     const post = await deletePost(id);
@@ -75,35 +86,43 @@ const Details = () => {
     }
   };
 
-  return (
-    <PageSection
-      pageTitle={`Details / ${values.title}`}
-      isLoading={!values.title}
-      canBack
-    >
-      <Stack direction='column' spacing={2}>
-        <PostForms values={values} changeHandler={(e) => changeHandler(e)} />
-        <Stack direction='row' spacing={2} alignItems='center'>
-          <LoadingButton
-            loading={isLoading.update}
-            loadingPosition='start'
-            variant='contained'
-            onClick={() => onUpdate('update')}
-            startIcon={<CreateIcon />}
-          >
-            update
-          </LoadingButton>
-          <LoadingButton
-            loading={isLoading.delete}
-            loadingPosition='start'
-            variant='outlined'
-            onClick={() => onDeletePost('delete')}
-            startIcon={<DeleteIcon />}
-          >
-            Delete
-          </LoadingButton>
+  const renderChildren = useMemo(
+    () => (
+      <>
+        <Stack direction='column' spacing={2}>
+          <PostForms
+            values={values}
+            changeHandler={(e) => memoizedChangeHandler(e)}
+          />
+          <Stack direction='row' spacing={2} alignItems='center'>
+            <LoadingButton
+              loading={isLoading.update}
+              loadingPosition='start'
+              variant='contained'
+              onClick={() => onUpdate('update')}
+              startIcon={<CreateIcon />}
+            >
+              update
+            </LoadingButton>
+            <LoadingButton
+              loading={isLoading.delete}
+              loadingPosition='start'
+              variant='outlined'
+              onClick={() => onDeletePost('delete')}
+              startIcon={<DeleteIcon />}
+            >
+              Delete
+            </LoadingButton>
+          </Stack>
         </Stack>
-      </Stack>
+      </>
+    ),
+    [values.title, values.body, isLoading.update, isLoading.delete]
+  );
+
+  return (
+    <PageSection pageTitle={title} isLoading={isLoading.onload} canBack>
+      {renderChildren}
     </PageSection>
   );
 };

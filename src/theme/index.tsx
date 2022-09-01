@@ -1,7 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FC } from 'react';
-import { IReactProps } from '../types/ChildrenNode';
 
 export const theme = createTheme({
   typography: {
