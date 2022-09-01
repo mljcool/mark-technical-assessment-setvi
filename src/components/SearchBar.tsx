@@ -11,9 +11,7 @@ export const SearhBarInput = styled(Paper)({
 });
 interface ComponentProps {
   value: string;
-  onSearchPost?: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void | React.ChangeEvent<HTMLInputElement> | undefined;
+  onSearchPost?: (e: changeEvent) => void | changeEvent | undefined;
 }
 
 const SearchBar: FC<ComponentProps> = ({ onSearchPost, value }) => {
